@@ -1,0 +1,155 @@
+CREATE TABLE [sotrudnik] (
+	id integer NOT NULL,
+	id_otdel integer NOT NULL,
+	id_dolzhnost integer NOT NULL,
+	id_pol integer NOT NULL,
+	id_status integer NOT NULL,
+	name varchar(20) NOT NULL,
+	adress varchar(100) NOT NULL,
+	passport varchar(20) NOT NULL,
+	birth_date date NOT NULL,
+	inn varchar(20) NOT NULL,
+	foto varchar(20) NOT NULL,
+  CONSTRAINT [PK_SOTRUDNIK] PRIMARY KEY CLUSTERED
+  (
+  [id] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [otdel] (
+	id_otdel integer NOT NULL,
+	nazvanie varchar(20) NOT NULL,
+	telfon varchar(20) NOT NULL,
+  CONSTRAINT [PK_OTDEL] PRIMARY KEY CLUSTERED
+  (
+  [id_otdel] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [dolzhnost] (
+	id_dolzhnost integer NOT NULL,
+	nazvanie varchar(20) NOT NULL,
+  CONSTRAINT [PK_DOLZHNOST] PRIMARY KEY CLUSTERED
+  (
+  [id_dolzhnost] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [semya] (
+	id_semya integer NOT NULL,
+	id_sotrudnik integer NOT NULL,
+	id_vid integer NOT NULL,
+	nazvanie varchar(100) NOT NULL,
+  CONSTRAINT [PK_SEMYA] PRIMARY KEY CLUSTERED
+  (
+  [id_semya] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [vid] (
+	id_vid integer NOT NULL,
+	nazvanie varchar(100) NOT NULL,
+  CONSTRAINT [PK_VID] PRIMARY KEY CLUSTERED
+  (
+  [id_vid] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [obrazovanie] (
+	id_obrazovanie integer NOT NULL,
+	id_sotrudnik integer NOT NULL,
+	id_tip integer NOT NULL,
+	nazvanie varchar(20) NOT NULL,
+	data_okonchaniya date NOT NULL,
+	specialnost varchar(20) NOT NULL,
+	kvalificaciya varchar(20) NOT NULL,
+  CONSTRAINT [PK_OBRAZOVANIE] PRIMARY KEY CLUSTERED
+  (
+  [id_obrazovanie] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [tip] (
+	id_tip integer NOT NULL,
+	nazvanie integer NOT NULL,
+  CONSTRAINT [PK_TIP] PRIMARY KEY CLUSTERED
+  (
+  [id_tip] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [pol] (
+	id_pol integer NOT NULL,
+	nazvanie varchar(100) NOT NULL,
+  CONSTRAINT [PK_POL] PRIMARY KEY CLUSTERED
+  (
+  [id_pol] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+CREATE TABLE [status] (
+	id_status integer NOT NULL,
+	nazvanie varchar(100) NOT NULL,
+  CONSTRAINT [PK_STATUS] PRIMARY KEY CLUSTERED
+  (
+  [id_status] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+
+)
+GO
+ALTER TABLE [sotrudnik] WITH CHECK ADD CONSTRAINT [sotrudnik_fk0] FOREIGN KEY ([id_otdel]) REFERENCES [otdel]([id_otdel])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [sotrudnik] CHECK CONSTRAINT [sotrudnik_fk0]
+GO
+ALTER TABLE [sotrudnik] WITH CHECK ADD CONSTRAINT [sotrudnik_fk1] FOREIGN KEY ([id_dolzhnost]) REFERENCES [dolzhnost]([id_dolzhnost])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [sotrudnik] CHECK CONSTRAINT [sotrudnik_fk1]
+GO
+ALTER TABLE [sotrudnik] WITH CHECK ADD CONSTRAINT [sotrudnik_fk2] FOREIGN KEY ([id_pol]) REFERENCES [pol]([id_pol])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [sotrudnik] CHECK CONSTRAINT [sotrudnik_fk2]
+GO
+ALTER TABLE [sotrudnik] WITH CHECK ADD CONSTRAINT [sotrudnik_fk3] FOREIGN KEY ([id_status]) REFERENCES [status]([id_status])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [sotrudnik] CHECK CONSTRAINT [sotrudnik_fk3]
+GO
+
+
+
+ALTER TABLE [semya] WITH CHECK ADD CONSTRAINT [semya_fk0] FOREIGN KEY ([id_sotrudnik]) REFERENCES [sotrudnik]([id])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [semya] CHECK CONSTRAINT [semya_fk0]
+GO
+ALTER TABLE [semya] WITH CHECK ADD CONSTRAINT [semya_fk1] FOREIGN KEY ([id_vid]) REFERENCES [vid]([id_vid])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [semya] CHECK CONSTRAINT [semya_fk1]
+GO
+
+
+ALTER TABLE [obrazovanie] WITH CHECK ADD CONSTRAINT [obrazovanie_fk0] FOREIGN KEY ([id_sotrudnik]) REFERENCES [sotrudnik]([id])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [obrazovanie] CHECK CONSTRAINT [obrazovanie_fk0]
+GO
+ALTER TABLE [obrazovanie] WITH CHECK ADD CONSTRAINT [obrazovanie_fk1] FOREIGN KEY ([id_tip]) REFERENCES [tip]([id_tip])
+ON UPDATE CASCADE
+GO
+ALTER TABLE [obrazovanie] CHECK CONSTRAINT [obrazovanie_fk1]
+GO
+
+
+
