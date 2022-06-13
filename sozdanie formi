@@ -1,0 +1,162 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Excel = Microsoft.Office.Interop.Excel;
+
+namespace Nag
+{
+    public partial class Form_obrzovanie : Form
+    {
+        private int id = 0;
+      
+        public Form_obrazovanie(int Id)
+        {
+            id = Id;
+            InitializeComponent();
+        }
+        private void Form_obrazovanie_Load(object sender, EventArgs e)
+        {
+            GraphicsPath gPath = new GraphicsPath();
+            Rectangle rect = new Rectangle(0, 0, 787, 682);
+            gPath.AddRectangle(rect);
+            this.Region = new Region(gPath);          
+            next();
+            tip_sp();           
+        }
+        private void next()
+        {
+            BD bd = new BD();
+            List<obrazovanie> spisok = new List<obrazovanie>();
+            List<obrazovanie> spisok1 = new List<obrazovanie>();
+            spisok = bd.Fill_obrazovanie_Id_sotrydnik(id.ToString());
+            foreach (obrazovanie p in spisok)
+            {
+                obrazovanie s = new obrazovanie();
+                s.Id = p.Id;
+                s.Sotrudnik = bd.Get_sotrudnik_id(p.Id_sotrudnik.ToString()).Name;
+                s.Tip = bd.Get_tip_Id(p.Id_tip.ToString()).Name;
+                s.Nazvanie = p.nazvanie;
+                s.data_okoncaniya = p.data_okoncaniya;
+                s.pecialnost = p.Specialnost;
+                s.Kvalificaciya = p.Kvalificaciya;
+                spisok1.Add(s);
+            }
+            
+            dataGridView1.DataSource = spisok1;
+            dataGridView1.Columns[0].HeaderText = "Номер";
+            dataGridView1.Columns[1].HeaderText = "Сотрудник";
+            dataGridView1.Columns[2].HeaderText = "Тип образования";
+            dataGridView1.Columns[3].HeaderText = "Место образования";
+            dataGridView1.Columns[4].HeaderText = "Дата окончания";
+            dataGridView1.Columns[5].HeaderText = "Специальность";
+            dataGridView1.Columns[6].HeaderText = "Квалификация";
+
+        }
+        private void tip_sp()
+        {
+            comboBox_tip.Items.Clear();
+            comboBox_tipp.Items.Clear();
+           
+            BD bd = new BD();             
+
+            List<tip> spisok = new List<tip>();
+            spisok = bd.Fill_tip();
+
+            foreach (tip kot in spisok)
+            {
+                comboBox_tip.Items.Add(kot.Name);
+                comboBox_tipp.Items.Add(kot.Name);
+              
+            }
+        }
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (comboBox_tip.Text == "" || textBox_data_okoncaniya.Text == "" || textBox_nazvanie.Text == "" || textBox_specialnost.Text == "" || textBox_kvalificaciya.Text == "")
+            {
+                MessageBox.Show("Заполните поля данных!!!");
+            }
+            else
+            {
+                BD bd = new BD();
+                obrazovanie z = new obrazovanie();
+
+                z.Id_sotrudnik = id;
+                z.Id_tip = bd.Get_tip_nazvanie(comboBox_tip.Text).Id;
+               
+                z.nazvanie =textBox_nazvanie.Text;
+                z.data_okonchaniya = Convert.ToInt32(textBox_data_okonchaniya)
+                z.specialnost = textBox_specialnost.Text;
+                z.kvalificaciya = textBox_kvalificaciya.Text;
+
+                try
+                {
+                    bd.Inser_obrazovanie(z);
+                    next();
+                    MessageBox.Show("Успешно!");
+                }
+                catch (FormatException)
+                { MessageBox.Show("Ошибка!"); }
+            }  }
+
+        private void button_delete_Click(object sender, EventArgs e)
+        {
+            if (textBox_id.Text == "")
+            {
+                MessageBox.Show("Заполните поля!");
+            }
+            else
+            {
+                BD bd = new BD();
+                bd.Delete(textBox_id.Text, "obrazovanie");
+                next();
+            } }
+
+        private void button_update_Click(object sender, EventArgs e)
+        {
+            if (comboBox_tip.Text == "" || textBox_id.Text == "" || textBox_data_oconcaniya.Text == "" || textBox_nazvanie.Text == "" || textBox_specialnost.Text == "" || textBox_kvalificaciya.Text == "")
+            {
+                MessageBox.Show("Заполните поля данных!");
+            }
+            else
+            {
+                BD bd = new BD();
+
+                obrazovanie z = new obrazovanie();
+                obrazovanie tek = new obrazovanie();
+
+                z.Id_sotrudnik = id;
+                z.Id_tip = bd.Get_tip_nazvanie(comboBox_tip.Text).Id;
+
+                z.Nazvanie = textBox_nazvanie.Text;
+                z.data_okonchaniya = Convert.ToInt32(textBox_data_okonchaniya.Text);
+                z.Specialnost = textBox_specialnost.Text;
+                z.Kvalificaciya = textBox_kalificaciya.Text;
+
+                tek.Id = Convert.ToInt32(textBox_id.Text);
+
+                try
+                {
+                    bd.Update_obrazovanie(tek, z);
+                    next();
+                    MessageBox.Show("Успешно!");
+                }
+                catch (FormatException)
+                { MessageBox.Show("Ошибка!"); }
+            }        }
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            textBox_id.Text = dataGridView1[0, data-GridView1.CurrentRow.Index].Value.ToString();
+            textBox_id.Text = dataGridView1[0, data-GridView1.CurrentRow.Index].Value.ToString();            
+            comboBox_tip.Text = dataGridView1[2, data-GridView1.CurrentRow.Index].Value.ToString();
+            textBox_nazvanie.Text = dataGridView1[3, data-GridView1.CurrentRow.Index].Value.ToString();
+            textBox_data_okoncaniya.Text = dataGridView1[4, data-GridView1.CurrentRow.Index].Value.ToString();
+            textBox_specialnost.Text = dataGridView1[5, data-GridView1.CurrentRow.Index].Value.ToString();
+            textBox_kvalificaciya.Text = dataGridView1[6, data-GridView1.CurrentRow.Index].Value.ToString();
+        }      
